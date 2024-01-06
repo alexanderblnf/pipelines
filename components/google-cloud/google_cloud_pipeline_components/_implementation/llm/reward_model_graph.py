@@ -45,6 +45,7 @@ def pipeline(
     lora_dim: int = 4,
     reward_model_learning_rate_multiplier: float = 1.0,
     reward_model_train_steps: int = 1000,
+    eval_dataset: Optional[str] = None,
     instruction: Optional[str] = None,
     project: str = _placeholders.PROJECT_ID_PLACEHOLDER,
     location: str = _placeholders.LOCATION_PLACEHOLDER,
@@ -123,6 +124,25 @@ def pipeline(
       .set_caching_options(False)
   )
 
+  preference_eval_dataset_importer = (
+      private_text_comparison_importer.private_text_comparison_importer(
+          project=project,
+          location=location,
+          input_text=eval_dataset,
+          inputs_field_name=prompt_column,
+          comma_separated_candidates_field_names=comma_separated_candidates_field_names.output,
+          choice_field_name=choice_column,
+          split=env.TRAIN_SPLIT,
+          large_model_reference=reference_model_metadata.outputs[
+              'reward_model_reference'
+          ],
+          image_uri=preference_dataset_image_uri.output,
+          instruction=instruction,
+      )
+      .set_display_name('Import Preference Eval Dataset')
+      .set_caching_options(False)
+  )
+
   reward_model_image_uri = function_based.resolve_private_image_uri(
       image_name='reward_model',
       accelerator_type=machine_spec.outputs['accelerator_type'],
@@ -141,6 +161,9 @@ def pipeline(
               'reward_model_path'
           ],
           input_dataset_path=preference_dataset_importer.outputs[
+              'output_dataset_path'
+          ],
+          eval_dataset_path=preference_eval_dataset_importer.outputs[
               'output_dataset_path'
           ],
           train_steps=reward_model_train_steps,
