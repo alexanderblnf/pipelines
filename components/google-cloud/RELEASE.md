@@ -1,4 +1,5 @@
 ## Upcoming release
+* Fix issue where AutoSxS was not propagating location to all sub-components.
 
 ## Release 2.10.0
 * Fix the missing output of pipeline remote runner. `AutoMLImageTrainingJobRunOp` now passes the model artifacts correctly to downstream components.
