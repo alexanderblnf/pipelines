@@ -17,6 +17,7 @@ import dataclasses
 import itertools
 import json
 from typing import Any, Dict, Mapping, Optional, Sequence, Union
+
 try:
     # Attempt to get the version of Pydantic installed
     from importlib.metadata import version
@@ -24,9 +25,9 @@ except ImportError:
     # Fallback for Python < 3.8 using pkg_resources
     from pkg_resources import get_distribution as version
 
+import yaml
 from kfp.components import _components
 from kfp.components import structures as v1_structures
-import yaml
 
 # Get the version of Pydantic installed
 pydantic_version = version("pydantic")
@@ -38,8 +39,7 @@ elif pydantic_version.startswith("2."):
 else:
     raise ImportError(
         f"Pydantic version {pydantic_version} is not supported. "
-        "Please install a supported version of Pydantic (>=1.0.0, <3.0.0)."
-    )
+        "Please install a supported version of Pydantic (>=1.0.0, <3.0.0).")
 
 
 class BaseModel(pydantic.BaseModel):

@@ -16,13 +16,13 @@
 import textwrap
 import unittest
 from unittest import mock
+
 try:
     # Attempt to get the version of Pydantic installed
     from importlib.metadata import version
 except ImportError:
     # Fallback for Python < 3.8 using pkg_resources
     from pkg_resources import get_distribution as version
-
 
 from absl.testing import parameterized
 from kfp.v2.components.experimental import structures
@@ -37,8 +37,7 @@ elif pydantic_version.startswith("2."):
 else:
     raise ImportError(
         f"Pydantic version {pydantic_version} is not supported. "
-        "Please install a supported version of Pydantic (>=1.0.0, <3.0.0)."
-    )
+        "Please install a supported version of Pydantic (>=1.0.0, <3.0.0).")
 
 V1_YAML_IF_PLACEHOLDER = textwrap.dedent("""\
     name: component_if
